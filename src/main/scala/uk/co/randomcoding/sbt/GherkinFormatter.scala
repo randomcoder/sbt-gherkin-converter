@@ -4,12 +4,13 @@ import java.io.FileWriter
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 
-import sbt.Keys.{sourceDirectory, target}
+import sbt.Keys.target
 import sbt.{AutoPlugin, settingKey, taskKey, _}
 import uk.co.randomcoding.cucumber.generator.reader.FeatureReader
 import uk.co.randomcoding.cucumber.generator.writer.FeatureHtml
 
 import scala.collection.JavaConverters._
+import scala.util.Try
 import scala.xml.{NodeSeq, XML}
 
 object GherkinFormatter extends AutoPlugin {
@@ -48,20 +49,18 @@ object WriteFeatureHtml {
   }
 
   private[this] def writeFeaturesIn(dir: File, baseOutputDir: File, relativeTo: File): Unit = {
+    println("Writing features from " + dir + " to " + baseOutputDir)
     val relativePath = dir.relativeTo(relativeTo).map(_.getPath).getOrElse("")
     val targetDir = new File(baseOutputDir, relativePath)
 
-    //val (dirs, files) = dir.listFiles.partition(_.isDirectory)
+    val dirContents = Try(dir.listFiles.toList).getOrElse(Nil)
 
-    dir.listFiles.partition(_.isDirectory) match {
+    dirContents.partition(_.isDirectory) match {
       case (dirs, files) => {
         writeFeatures(files.filter(_.getName.endsWith(".feature")), targetDir)
         dirs.foreach(writeFeaturesIn(_, baseOutputDir, relativeTo))
       }
     }
-
-//    writeFeatures(files.filter(_.getName.endsWith(".feature")), targetDir)
-//    dirs.foreach(writeFeaturesIn(_, baseOutputDir, relativeTo))
   }
 
   private[this] def writeFeatures(features: Seq[File], outputDir: File) = {

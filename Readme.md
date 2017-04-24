@@ -26,5 +26,12 @@ That's it! You can now generate html versions of your `.feature` files with the 
 > writeFeatures
 Writing features from src/main/resources/feature to ~/code/test-project/target/featurehtml
 Written html for feature files to ~/code/test-project/target/featurehtml
-
 ```
+
+### Licence
+
+This plugin is licenced under the [AGPL v3](https://www.gnu.org/licenses/agpl-3.0.en.html)
+
+### Contributions
+
+Contributions are welcome. Please create a fork and submit pull requests.

@@ -28,12 +28,16 @@ object GherkinFormatter extends AutoPlugin {
     val writeFeatures = taskKey[Unit]("Test Task")
     val featuresOutput = settingKey[File]("Location of html output from feature files")
     val featuresDir = settingKey[String]("Directory containing the feature files")
+    val featuresTitle = settingKey[String]("The title for the main page")
 
     lazy val gherkinFormatterSettings: Seq[Def.Setting[_]] = Seq(
-      writeFeatures := WriteFeatureHtml(new File((featuresDir in writeFeatures).value), (featuresOutput in writeFeatures).value),
       featuresOutput in writeFeatures := (target.value / "featurehtml"),
-      featuresDir in writeFeatures := "src/main/resources/feature"
+      featuresDir in writeFeatures := "src/main/resources/feature",
+      featuresTitle in writeFeatures := "Features",
+      writeFeatures := WriteFeatureHtml(new File(keyValue(featuresDir)), keyValue(featuresOutput), keyValue(featuresTitle))
     )
+
+    private[this] def keyValue[T](key: SettingKey[T]): T = (key in writeFeatures).value
   }
 
   import autoImport._
@@ -42,9 +46,9 @@ object GherkinFormatter extends AutoPlugin {
 
 object WriteFeatureHtml {
 
-  def apply(featureDir: File, featuresOutput: File) = {
+  def apply(featureDir: File, featuresOutput: File, projectName: String) = {
     val generator = new HtmlFeatureGenerator()
     generator.generateFeatures(featureDir, featuresOutput)
-    generator.generateIndexes(featuresOutput)
+    generator.generateIndexes(featuresOutput, projectName)
   }
 }

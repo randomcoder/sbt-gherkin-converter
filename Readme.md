@@ -11,16 +11,41 @@ SBT auto plugin to use [Gherkin Converter](https://github.com/randomcoder/gherki
 Add the plugin to your build with the following in `project/plugins.sbt`:
 
 ```
-addSbtPlugin("uk.co.randomcoding" % "sbt-gherkin-converter" % "0.0.2")
+addSbtPlugin("uk.co.randomcoding" % "sbt-gherkin-converter" % "0.2.1")
 ```
 
-Then in your build sbt, set the location of the parent directory of your feature files _**relative to the project's root**_:
+Then in your build sbt, set the location of the parent directory of your feature files _**relative to the project's root**_
+and the title you want for the main index page
 
 ```
 featuresDir in (Compile, writeFeatures) := "src/main/resources/feature"
+
+featuresTitle in (Compile, writeFeatures) := "Your Title"
+```
+
+If your feature files live in the `test` scope then use
+
+```
+featuresDir in (Test, writeFeatures) := "src/main/resources/feature"
+
+featuresTitle in (Test, writeFeatures) := "Your Title"
 ```
 
 That's it! You can now generate html versions of your `.feature` files with the `writeFeatures` task:
+
+### Multi Project Builds
+If you have a build with multiple projects then you will typically want to disable the task for the `root` project
+
+```
+lazy val root = project.in(file(".")).
+  settings(...).
+  settings(
+    writeFeatures := {}
+  )
+```
+
+The same is true for other projects that you don't want to execute the task in, e.g. because they don't contain any
+features.
 
 ```
 > writeFeatures

@@ -16,7 +16,7 @@
  */
 package uk.co.randomcoding.sbt
 
-import sbt.Keys.target
+import sbt.Keys.{target, streams}
 import sbt.{AutoPlugin, settingKey, taskKey, _}
 import uk.co.randomcoding.cucumber.generator.html.HtmlFeatureGenerator
 
@@ -34,10 +34,15 @@ object GherkinFormatter extends AutoPlugin {
       featuresOutput in writeFeatures := (target.value / "featurehtml"),
       featuresDir in writeFeatures := "src/main/resources/feature",
       featuresTitle in writeFeatures := "Features",
-      writeFeatures := WriteFeatureHtml(new File(keyValue(featuresDir)), keyValue(featuresOutput), keyValue(featuresTitle))
+      writeFeatures := {
+        val featureDir = new File((featuresDir in writeFeatures).value)
+        val targetDirectory = (featuresOutput in writeFeatures).value
+        val mainTitle = (featuresTitle in writeFeatures).value
+        streams.value.log.info(s"Generating html for features from $featureDir into $targetDirectory")
+        WriteFeatureHtml(featureDir, targetDirectory, mainTitle)
+        streams.value.log.info(s"Successfully generated html for features from $featureDir into $targetDirectory")
+      }
     )
-
-    private[this] def keyValue[T](key: SettingKey[T]): T = (key in writeFeatures).value
   }
 
   import autoImport._
@@ -46,9 +51,9 @@ object GherkinFormatter extends AutoPlugin {
 
 object WriteFeatureHtml {
 
-  def apply(featureDir: File, featuresOutput: File, projectName: String) = {
+  def apply(featureDir: File, featuresOutput: File, mainTitle: String) = {
     val generator = new HtmlFeatureGenerator()
     generator.generateFeatures(featureDir, featuresOutput)
-    generator.generateIndexes(featuresOutput, projectName)
+    generator.generateIndexes(featuresOutput, mainTitle)
   }
 }

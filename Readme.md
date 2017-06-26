@@ -1,5 +1,7 @@
 # SBT Gherkin Converter
 
+[![Build Status](https://travis-ci.org/randomcoder/sbt-gherkin-converter.svg?branch=master)](https://travis-ci.org/randomcoder/sbt-gherkin-converter)
+
 SBT auto plugin to use [Gherkin Converter](https://github.com/randomcoder/gherkin-converter) to generate html from
 `.feature` files.
 

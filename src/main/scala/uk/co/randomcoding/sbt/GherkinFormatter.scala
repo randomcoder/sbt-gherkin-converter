@@ -46,12 +46,12 @@ object GherkinFormatter extends AutoPlugin {
   }
 
   import autoImport._
-  override val projectSettings = inConfig(Compile)(gherkinFormatterSettings)
+  override val projectSettings: Seq[Setting[_]] = inConfig(Compile)(gherkinFormatterSettings)
 }
 
 object WriteFeatureHtml {
 
-  def apply(featureDir: File, featuresOutput: File, mainTitle: String) = {
+  def apply(featureDir: File, featuresOutput: File, mainTitle: String): Unit = {
     val generator = new HtmlFeatureGenerator()
     generator.generateFeatures(featureDir, featuresOutput)
     generator.generateIndexes(featuresOutput, mainTitle)

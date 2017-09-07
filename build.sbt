@@ -1,6 +1,6 @@
 name := "sbt-gherkin-converter"
 
-version := "0.3.0"
+version := "0.3.1"
 
 scalaVersion := "2.12.3"
 
@@ -10,6 +10,7 @@ sbtPlugin := true
 
 resolvers += Resolver.sonatypeRepo("snapshots")
 
+libraryDependencies += "uk.co.randomcoding" %% "gherkin-converter" % "0.7.0"
 libraryDependencies += "uk.co.randomcoding" %% "gherkin-converter" % "0.7.0-SNAPSHOT"
 
 licenses += ("AGPLv3", url("https://www.gnu.org/licenses/agpl-3.0.en.html"))
